@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Uso - Relatório Consolidado Jan/Fev 2026</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#fff; --ink:#1f2937; --muted:#6b7280; --line:#dbe3ee;
+    --accent:#0f766e; --accent2:#1d4ed8; --warn:#d97706;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.35}
+  .page{max-width:900px;margin:18px auto;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(15,23,42,.06)}
+  h1{margin:0 0 6px;font-size:22px}
+  .sub{margin:0 0 10px;color:var(--muted);font-size:13px}
+  .link-box{
+    border:2px solid #bfdbfe;background:#eff6ff;border-radius:12px;padding:10px 12px;margin:10px 0 14px;
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap
+  }
+  .link-box .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#1d4ed8;font-weight:700}
+  .link-box a{color:#1e40af;font-weight:700;text-decoration:none;word-break:break-all}
+  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:start}
+  .block{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+  .block h2{margin:0 0 6px;font-size:14px}
+  .block p,.block li{font-size:12px;color:#374151}
+  .block ul,.block ol{margin:6px 0 0 18px;padding:0}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .tag{display:inline-flex;align-items:center;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700}
+  .as{background:#fef08a;color:#854d0e}
+  .ds{background:#dbeafe;color:#1d4ed8}
+  .manual{background:#ede9fe;color:#6d28d9}
+  .pend{background:#fee2e2;color:#991b1b}
+  .diagram{border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(180deg,#fbfdff,#ffffff)}
+  .diagram h2{margin:0 0 10px;font-size:14px}
+  .row-top{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:start}
+  .box{
+    border:2px solid #cbd5e1;border-radius:10px;background:#fff;padding:8px;text-align:center;font-size:11px;font-weight:700;min-height:58px;
+    display:flex;flex-direction:column;justify-content:center
+  }
+  .box small{display:block;font-size:10px;font-weight:600;color:var(--muted);margin-top:2px}
+  .box.green{border-color:#99f6e4}
+  .box.orange{border-color:#fed7aa}
+  .box.blue{border-color:#bfdbfe}
+  .box.gray{border-color:#d1d5db}
+  .funnel{
+    margin:8px auto 6px; width:0;height:0;
+    border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #94a3b8;
+  }
+  .lines{position:relative;height:44px;margin:4px 4px 0}
+  .lines svg{width:100%;height:100%}
+  .mid{display:grid;grid-template-columns:1.3fr .7fr;gap:12px;align-items:center;margin-top:2px}
+  .ventas{border:2px solid #cbd5e1;border-radius:10px;padding:10px;text-align:center;background:#fff}
+  .ventas .t{font-size:13px;font-weight:800}
+  .ventas .s{font-size:11px;color:var(--muted);margin-top:2px}
+  .plan{border:2px dashed #cbd5e1;border-radius:10px;padding:10px;text-align:center;background:#f8fafc}
+  .plan .t{font-size:12px;font-weight:800}
+  .plan .s{font-size:10px;color:#64748b}
+  .down{margin:8px auto 6px;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:12px solid #64748b}
+  .final-row{display:grid;grid-template-columns:1fr .9fr;gap:12px;align-items:start}
+  .html-box{border:2px solid #94a3b8;border-radius:10px;padding:12px;text-align:center;background:#fff}
+  .html-box .t{font-size:13px;font-weight:800}
+  .html-box .s{font-size:11px;color:var(--muted)}
+  .list-map{font-size:11px;color:#334155;border-left:3px solid #e2e8f0;padding-left:8px}
+  .list-map ol{margin:0 0 0 16px;padding:0}
+  .foot{margin-top:10px;color:var(--muted);font-size:11px}
+  @media (max-width: 860px){
+    .grid{grid-template-columns:1fr}
+    .row-top{grid-template-columns:repeat(2,1fr)}
+    .mid,.final-row{grid-template-columns:1fr}
+  }
+  @media print{
+    @page { size:A4 portrait; margin:8mm; }
+    body{background:#fff}
+    body{zoom:.8}
+    .page{box-shadow:none;border:0;margin:0;max-width:none;border-radius:0;padding:8px}
+    .page *{line-height:1.2}
+    .link-box{margin:4px 0 8px;padding:6px 8px}
+    .diagram,.block{padding:6px}
+    .grid{gap:8px;margin-top:8px !important}
+    h1{font-size:19px;margin-bottom:4px}
+    .sub{font-size:10px;margin-bottom:4px}
+    .block h2,.diagram h2{font-size:11px;margin-bottom:4px}
+    .block p,.block li,.list-map,.foot{font-size:10px}
+    .block ul,.block ol{margin-top:4px}
+    .legend{gap:4px;margin-top:4px}
+    .box{min-height:40px;font-size:9px;padding:4px}
+    .box small{font-size:8px;margin-top:1px}
+    .lines{height:28px;margin-top:2px}
+    .funnel{margin:4px auto 4px}
+    .mid{gap:8px;margin-top:0}
+    .ventas,.plan,.html-box{padding:6px}
+    .ventas .t,.html-box .t{font-size:11px}
+    .ventas .s,.html-box .s,.plan .s{font-size:9px}
+    .plan .t{font-size:10px}
+    .down{margin:4px auto 4px}
+    .final-row{gap:8px}
+    .foot{margin-top:6px}
+    .tag{font-size:10px;padding:1px 7px}
+    .link-box a{text-decoration:none}
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <h1>Manual de Uso – Relatório Consolidado (Jan/Fev 2026)</h1>
+    <p class="sub">Guia rápido para navegação, leitura correta dos grupos e entendimento da consolidação de dados.</p>
+
+    <div class="link-box">
+      <span class="label">Link oficial do relatório</span>
+      <a href="https://transicao-jornada-fin-ena-skala-2026.netlify.app/" target="_blank" rel="noopener noreferrer">https://transicao-jornada-fin-ena-skala-2026.netlify.app/</a>
+    </div>
+
+    <section class="diagram">
+      <h2>Diagrama de Acesso e Consolidação (visão pensada para o time)</h2>
+      <div class="row-top">
+        <div class="box green">Greenn <small>AS/DS</small></div>
+        <div class="box orange">Hotmart <small>AS/DS</small></div>
+        <div class="box blue">Itaú <small>AS/DS + Extrato + Boletos</small></div>
+        <div class="box gray">Acomp. Comercial <small>(apoio / contexto)</small></div>
+      </div>
+      <div class="lines">
+        <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M12 2 L40 32" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+          <path d="M37 2 L48 32" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+          <path d="M62 2 L56 32" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+          <path d="M87 2 L64 32" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="funnel"></div>
+      <div class="mid">
+        <div class="ventas">
+          <div class="t">VENDAS (AS + DS)</div>
+          <div class="s">Camada consolidada + filtros globais + correlação</div>
+        </div>
+        <div class="plan">
+          <div class="t">Casos / Jornada</div>
+          <div class="s">Análise factual (Greenn + Hotmart + Itaú + Acomp.)</div>
+        </div>
+      </div>
+      <div class="down"></div>
+      <div class="final-row">
+        <div class="html-box">
+          <div class="t">LISTA CONSOLIDADA (HTML)</div>
+          <div class="s">Navegação, filtros, KPIs e leitura operacional/financeira</div>
+        </div>
+        <div class="list-map">
+          <ol>
+            <li>Vendas Greenn</li>
+            <li>Vendas Hotmart</li>
+            <li>Itaú (Extrato + Boletos)</li>
+            <li>Acompanhamento Comercial</li>
+            <li>Casos / Jornada (analítico)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid" style="margin-top:14px;">
+      <section class="block">
+        <h2>Como navegar (passo a passo)</h2>
+        <ol>
+          <li>Use <strong>Legendas Gerais</strong> para filtrar tudo: período, origem, produto, AS/DS, contrato, NFSe e status.</li>
+          <li>Confira os <strong>KPIs</strong> no topo (bruto, líquido, ticket e volumes por grupo).</li>
+          <li>Abra o grupo desejado (<strong>Greenn / Hotmart / Itaú / Acomp.</strong>) e refine com a busca da própria seção.</li>
+          <li>Use <strong>Colunas</strong> para mostrar/ocultar campos conforme o objetivo (financeiro, comercial, conciliação).</li>
+          <li>Em células longas, use <strong>“ver mais / recolher”</strong> (limite visual de até 3 linhas).</li>
+          <li>Use <strong>Casos / Jornada</strong> para entender a trilha comercial-financeira por pessoa.</li>
+        </ol>
+      </section>
+
+      <section class="block">
+        <h2>Leitura correta dos grupos</h2>
+        <ul>
+          <li><strong>Greenn / Hotmart</strong>: vendas/transações.</li>
+          <li><strong>Itaú Extrato</strong>: movimentações bancárias efetivadas.</li>
+          <li><strong>Boletos Itaú</strong>: carteira (pago / a vencer / vencido).</li>
+          <li><strong>Acomp. Comercial</strong>: controle operacional (não é fechamento financeiro final).</li>
+          <li><strong>Casos / Jornada</strong>: camada analítica (não altera bases linha a linha).</li>
+        </ul>
+        <div class="legend">
+          <span class="tag as">AS</span>
+          <span class="tag ds">DS</span>
+          <span class="tag manual">complemento</span>
+          <span class="tag pend">pendência</span>
+        </div>
+      </section>
+    </div>
+
+    <p class="foot">
+      Observação: o relatório foi estruturado para preservar os dados linha a linha. Filtros, compactação visual e camada de jornada são recursos de navegação/analíticos e não alteram os registros base.
+    </p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "version": 1,
+    "description": "Regras manuais e enriquecimentos do relatório consolidado (camada de configuração, sem alterar base de origem)."
+  },
+  "asds_overrides": {
+    "gre-006": "AS",
+    "hot-022": "DS",
+    "hot-026": "AS"
+  },
+  "same_person_links": [
+    {
+      "id_a": "gre-084",
+      "id_b": "hot-026",
+      "label": "Mesma pessoa (nome variante)"
+    }
+  ],
+  "contact_enrichment": {
+    "gre-084": {
+      "email_aliases": [
+        "anaalonso.arq@gmail.com"
+      ]
+    },
+    "hot-026": {
+      "email_aliases": [
+        "contato@anaalonso.com.br"
+      ]
+    }
+  },
+  "case_overrides": {
+    "cas-005": {
+      "status_caso": "Convertido",
+      "observacao_append_if_missing": "Cliente pagou boleto de março como sendo fevereiro, foi criado um novo boleto com vencimento em março/26 e já encaminhado a Fran."
+    }
+  },
+  "comissoes": {
+    "2026-01": {
+      "sdr_fran": [
+        "gre-088",
+        "hot-013",
+        "ita-001",
+        "ita-002",
+        "ita-003",
+        "ita-005"
+      ],
+      "cs_renata": [
+        "gre-006",
+        "hot-001",
+        "hot-002",
+        "hot-003",
+        "hot-004",
+        "hot-005",
+        "hot-006",
+        "hot-007",
+        "hot-008",
+        "hot-009",
+        "hot-010",
+        "hot-011",
+        "hot-012",
+        "hot-014"
+      ]
+    }
+  },
+  "product_asds_rules": [],
+  "doc_flags": {},
+  "itau_enrichment": {}
+}
