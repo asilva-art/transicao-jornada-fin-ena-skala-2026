@@ -173,6 +173,7 @@ td.num { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums
 .tag-fran { color:#065f46; background:#ecfdf5; border:1px solid #a7f3d0; }
 .tag-renata { color:#9a3412; background:#fff7ed; border:1px solid #fdba74; }
 .info-dot { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; margin-left:6px; border-radius:999px; border:1px solid #cbd5e1; background:#f8fafc; color:#475569; font-size:10px; font-weight:700; line-height:1; cursor:help; vertical-align:middle; }
+.cop-info-dot { width:12px; height:12px; margin-left:5px; font-size:9px; border-color:#d1d5db; color:#64748b; background:#ffffff; }
 .legend-mini { margin-top:6px; font-size:11px; color:var(--muted); }
 .legend-box { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
 .legend-item { display:inline-flex; align-items:center; gap:5px; font-size:10px; color:var(--muted); }
@@ -1023,6 +1024,67 @@ function renderCommissionLegendFromConfig(cfg) {
       el.classList.toggle('active');
       applyAllFilters();
     });
+  });
+}
+
+function applySpecificCoProducerBubble() {
+  const table = document.getElementById('tblGreenn');
+  if (!table) return;
+
+  const coProducerBubbles = [
+    {
+      rowId: 'gre-113',
+      reference: '7969593',
+      copId: '7969593',
+      ariaLabel: 'Detalhamento de co-produtor da referência 7969593',
+      lines: [
+        'Total Bruto: R$ 667,00',
+        'Taxa de Vendedor: - R$ 34,28',
+        'Taxa de Antecipação do Usuário: - R$ 3,78',
+        'Coprodutor \"Rafael\": - R$ 158,18',
+        'Coprodutor \"Matheus dos Navegantes Machado\": - R$ 158,18',
+        'Total Líquido: R$ 316,36'
+      ]
+    },
+    {
+      rowId: 'gre-112',
+      reference: '7861073',
+      copId: '7861073',
+      ariaLabel: 'Detalhamento de participações da referência 7861073',
+      lines: [
+        'Total Bruto: R$ 735,27',
+        'Taxa de Vendedor: - R$ 37,69',
+        'Total Líquido: R$ 697,58'
+      ]
+    }
+  ];
+
+  coProducerBubbles.forEach((spec) => {
+    // Prefer stable row ID; fallback to reference match.
+    let found = findRowById(spec.rowId);
+    if (!found) {
+      const rows = Array.from(table.querySelectorAll('tbody tr'));
+      for (const row of rows) {
+        const refCell = row.querySelector('.td-std-ref');
+        if ((refCell?.innerText || '').includes(spec.reference)) {
+          found = { row, table };
+          break;
+        }
+      }
+    }
+    if (!found) return;
+
+    const coCell = getCellByHeader(found.row, found.table, 'Co-Produtor');
+    if (!coCell) return;
+    if (coCell.querySelector(`.info-dot[data-cop-id="${spec.copId}"]`)) return;
+
+    const bubble = document.createElement('span');
+    bubble.className = 'info-dot cop-info-dot';
+    bubble.dataset.copId = spec.copId;
+    bubble.textContent = 'i';
+    bubble.title = spec.lines.join('\\n');
+    bubble.setAttribute('aria-label', spec.ariaLabel);
+    coCell.appendChild(bubble);
   });
 }
 
@@ -1888,6 +1950,7 @@ async function bootstrapReport() {
   standardizeReadingLine('tblItauExtrato');
   standardizeReadingLine('tblItauBoletos');
   standardizeReadingLine('tblAcomp');
+  applySpecificCoProducerBubble();
   enhanceCasesTableUI();
   renderCommissionLegendFromConfig(REPORT_CONFIG);
   applyGlobalCellDensity();
