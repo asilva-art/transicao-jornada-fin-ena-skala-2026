@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consolidador de Despesas | VM Academy</title>
+  <style>
+    :root {
+      --bg: #eef2f6;
+      --panel: #ffffff;
+      --text: #162033;
+      --muted: #5f6b7d;
+      --border: #d7deea;
+      --accent: #0d9488;
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      padding: 22px;
+    }
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(120deg, rgba(13,148,136,.08), rgba(29,78,216,.05));
+    }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -0.02em; }
+    .sub { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+    .btn {
+      text-decoration: none;
+      border: 1px solid #b9c7df;
+      color: #213047;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .grid {
+      padding: 18px 20px 0;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+    .k { margin: 0; font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .08em; }
+    .v { margin: 6px 0 2px; font-size: 26px; font-weight: 700; }
+    .m { margin: 0; font-size: 12px; color: var(--muted); }
+    .panel {
+      margin: 16px 20px 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .panel-head {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+      font-size: 14px;
+      color: #334155;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+    }
+    thead th {
+      text-align: left;
+      background: #f1f5f9;
+      color: #334155;
+      border-bottom: 1px solid var(--border);
+      padding: 10px;
+    }
+    tbody td {
+      padding: 10px;
+      border-bottom: 1px solid #e8edf5;
+      color: #334155;
+      vertical-align: top;
+    }
+    .chip {
+      display: inline-block;
+      background: #fff7ed;
+      color: var(--warn);
+      border: 1px solid #fde7ce;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+    }
+    .note {
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #64748b;
+      background: #fcfcfd;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+      header { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      body { padding: 10px; }
+      .panel { margin: 10px; }
+      .grid { padding: 10px 10px 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Consolidador de Despesas</h1>
+        <p class="sub">Estrutura base pronta para inclusão das despesas sem alterar o consolidado de receitas.</p>
+      </div>
+      <a class="btn" href="index.html">Voltar ao início</a>
+    </header>
+
+    <section class="grid">
+      <article class="card"><p class="k">Despesas (Qtd)</p><p class="v">0</p><p class="m">Sem lançamentos</p></article>
+      <article class="card"><p class="k">Total Bruto</p><p class="v">R$ 0,00</p><p class="m">Período aberto</p></article>
+      <article class="card"><p class="k">Total Pago</p><p class="v">R$ 0,00</p><p class="m">Sem baixas</p></article>
+      <article class="card"><p class="k">Em Aberto</p><p class="v">R$ 0,00</p><p class="m">Sem pendências</p></article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">Lançamentos de Despesas <span class="chip">Pronto para receber dados</span></div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:90px;">ID</th>
+            <th style="width:110px;">Data</th>
+            <th style="width:180px;">Fornecedor</th>
+            <th>Descrição</th>
+            <th style="width:140px;">Categoria</th>
+            <th style="width:120px;">Status</th>
+            <th style="width:130px;">Valor (R$)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>des-001</td>
+            <td>-</td>
+            <td>-</td>
+            <td>Estrutura inicial criada.</td>
+            <td>Setup</td>
+            <td>Rascunho</td>
+            <td>R$ 0,00</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">Próximo passo: você me passa a base de despesas e eu já deixo com filtros, categorias e KPIs no mesmo padrão de leitura de receitas.</div>
+    </section>
+  </main>
+</body>
+</html>
