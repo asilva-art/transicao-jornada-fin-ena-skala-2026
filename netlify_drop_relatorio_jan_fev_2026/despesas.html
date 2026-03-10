@@ -103,7 +103,7 @@
     }
     .auth-controls {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr auto auto auto auto;
+      grid-template-columns: 1.1fr 0.9fr auto auto auto auto auto;
       gap: 8px;
       align-items: center;
     }
@@ -144,6 +144,46 @@
     .auth-status.ok { color: #166534; }
     .auth-status.warn { color: #92400e; }
     .auth-status.err { color: #b91c1c; }
+    .firebase-config {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #d7deea;
+    }
+    .firebase-config.show {
+      display: block;
+    }
+    .firebase-config-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr)) auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .firebase-config-grid input,
+    .firebase-config-grid button {
+      height: 32px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .firebase-config-grid input {
+      border: 1px solid #cdd7e7;
+      padding: 0 10px;
+      color: #1f2937;
+    }
+    .firebase-config-grid button {
+      border: 1px solid #b9c6da;
+      background: #f8fbff;
+      color: #334155;
+      font-weight: 700;
+      padding: 0 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .firebase-tip {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #64748b;
+    }
     .panel {
       margin: 16px 20px 20px;
       border: 1px solid var(--border);
@@ -317,6 +357,9 @@
       .auth-controls {
         grid-template-columns: repeat(2, minmax(140px, 1fr));
       }
+      .firebase-config-grid {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
       .filters {
         grid-template-columns: repeat(2, minmax(140px, 1fr));
       }
@@ -329,6 +372,9 @@
       .auth-panel { margin: 10px; }
       .grid { padding: 10px 10px 0; }
       .auth-controls {
+        grid-template-columns: 1fr;
+      }
+      .firebase-config-grid {
         grid-template-columns: 1fr;
       }
       .filters {
@@ -362,12 +408,24 @@
       <div class="auth-controls">
         <input id="authEmail" type="email" placeholder="E-mail de acesso" autocomplete="username" />
         <input id="authPassword" type="password" placeholder="Senha" autocomplete="current-password" />
+        <button id="btnCreateUser" type="button">Criar usuário</button>
         <button id="btnSignIn" type="button">Entrar</button>
         <button id="btnSignOut" type="button" disabled>Sair</button>
         <button id="btnSaveAll" type="button" disabled>Salvar alterações</button>
         <button id="btnSyncBase" type="button" disabled>Publicar base inicial</button>
+        <button id="btnToggleFirebaseConfig" type="button">Configurar Firebase</button>
       </div>
       <p id="authStatus" class="auth-status">Modo leitura local. Configure Firebase para habilitar edição com persistência.</p>
+      <div id="firebaseConfigPanel" class="firebase-config">
+        <div class="firebase-config-grid">
+          <input id="cfgApiKey" type="text" placeholder="apiKey" />
+          <input id="cfgAuthDomain" type="text" placeholder="authDomain" />
+          <input id="cfgProjectId" type="text" placeholder="projectId" />
+          <input id="cfgAppId" type="text" placeholder="appId" />
+          <button id="btnSaveFirebaseConfig" type="button">Salvar config</button>
+        </div>
+        <div class="firebase-tip">A configuração é salva neste navegador. Após salvar, a página reconecta automaticamente.</div>
+      </div>
     </section>
 
     <section class="panel">
@@ -444,7 +502,7 @@
   </script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
     import { getFirestore, collection, doc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
     (function () {
@@ -473,7 +531,16 @@
       const btnSignOut = document.getElementById("btnSignOut");
       const btnSaveAll = document.getElementById("btnSaveAll");
       const btnSyncBase = document.getElementById("btnSyncBase");
+      const btnCreateUser = document.getElementById("btnCreateUser");
+      const btnToggleFirebaseConfig = document.getElementById("btnToggleFirebaseConfig");
+      const firebaseConfigPanel = document.getElementById("firebaseConfigPanel");
+      const cfgApiKey = document.getElementById("cfgApiKey");
+      const cfgAuthDomain = document.getElementById("cfgAuthDomain");
+      const cfgProjectId = document.getElementById("cfgProjectId");
+      const cfgAppId = document.getElementById("cfgAppId");
+      const btnSaveFirebaseConfig = document.getElementById("btnSaveFirebaseConfig");
       const authStatus = document.getElementById("authStatus");
+      const FIREBASE_CONFIG_STORAGE_KEY = "vm_despesas_firebase_config_v1";
 
       let sortState = { col: null, direction: "asc", type: "text" };
       let firebaseEnabled = false;
@@ -566,6 +633,7 @@
         });
         btnSaveAll.disabled = !enabled || !firebaseEnabled;
         btnSyncBase.disabled = !enabled || !firebaseEnabled;
+        btnCreateUser.disabled = !firebaseEnabled;
       }
 
       function rowToPayload(row) {
@@ -841,12 +909,76 @@
         });
       }
 
+      function getStoredFirebaseConfig() {
+        try {
+          const raw = localStorage.getItem(FIREBASE_CONFIG_STORAGE_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch {
+          return {};
+        }
+      }
+
+      function getFirebaseConfig() {
+        const fromWindow = window.FIREBASE_CONFIG || {};
+        const fromStorage = getStoredFirebaseConfig();
+        return { ...fromWindow, ...fromStorage };
+      }
+
+      function setConfigInputs(config) {
+        cfgApiKey.value = config.apiKey || "";
+        cfgAuthDomain.value = config.authDomain || "";
+        cfgProjectId.value = config.projectId || "";
+        cfgAppId.value = config.appId || "";
+      }
+
+      function saveFirebaseConfigFromPanel() {
+        const config = {
+          apiKey: cfgApiKey.value.trim(),
+          authDomain: cfgAuthDomain.value.trim(),
+          projectId: cfgProjectId.value.trim(),
+          appId: cfgAppId.value.trim()
+        };
+        localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(config));
+        setAuthStatus("Configuração Firebase salva. Recarregando...", "ok");
+        setTimeout(() => window.location.reload(), 500);
+      }
+
       function isFirebaseConfigured(config) {
         const required = ["apiKey", "authDomain", "projectId", "appId"];
         return required.every((key) => typeof config[key] === "string" && config[key].trim() !== "");
       }
 
       function bindAuthEvents() {
+        btnToggleFirebaseConfig.addEventListener("click", () => {
+          firebaseConfigPanel.classList.toggle("show");
+        });
+
+        btnSaveFirebaseConfig.addEventListener("click", () => {
+          saveFirebaseConfigFromPanel();
+        });
+
+        btnCreateUser.addEventListener("click", async () => {
+          if (!firebaseEnabled || !auth) {
+            setAuthStatus("Configure Firebase antes de criar usuário.", "warn");
+            return;
+          }
+          if (!authEmail.value || !authPassword.value) {
+            setAuthStatus("Informe e-mail e senha para criar usuário.", "warn");
+            return;
+          }
+          btnCreateUser.disabled = true;
+          try {
+            await createUserWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
+            setAuthStatus("Usuário criado e conectado com sucesso.", "ok");
+          } catch (error) {
+            setAuthStatus("Falha ao criar usuário: " + error.message, "err");
+          } finally {
+            btnCreateUser.disabled = false;
+          }
+        });
+
         btnSignIn.addEventListener("click", async () => {
           if (!firebaseEnabled || !auth) return;
           if (!authEmail.value || !authPassword.value) {
@@ -872,9 +1004,9 @@
       }
 
       function initFirebase() {
-        const config = window.FIREBASE_CONFIG || {};
+        const config = getFirebaseConfig();
         if (!isFirebaseConfigured(config)) {
-          setAuthStatus("Firebase não configurado. Preencha FIREBASE_CONFIG para habilitar edição com salvamento.", "warn");
+          setAuthStatus("Firebase não configurado. Use o botão \"Configurar Firebase\" para habilitar edição com salvamento.", "warn");
           setEditingEnabled(false);
           return;
         }
@@ -914,6 +1046,7 @@
       hydrateFilterOptions();
       render();
       setEditingEnabled(false);
+      setConfigInputs(getFirebaseConfig());
       initFirebase();
     })();
   </script>
