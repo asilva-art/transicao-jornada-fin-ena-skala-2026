@@ -86,6 +86,64 @@
     .k { margin: 0; font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: .08em; }
     .v { margin: 6px 0 2px; font-size: 26px; font-weight: 700; }
     .m { margin: 0; font-size: 12px; color: var(--muted); }
+    .auth-panel {
+      margin: 16px 20px 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 12px;
+    }
+    .auth-title {
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .auth-controls {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr auto auto auto auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .auth-controls input,
+    .auth-controls button {
+      height: 34px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .auth-controls input {
+      border: 1px solid #cdd7e7;
+      padding: 0 10px;
+      color: #1f2937;
+      background: #fff;
+    }
+    .auth-controls button {
+      border: 1px solid #b9c6da;
+      background: #f8fbff;
+      color: #334155;
+      font-weight: 700;
+      padding: 0 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .auth-controls button:hover {
+      background: #eef5ff;
+      border-color: #9fb2d0;
+    }
+    .auth-controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .auth-status {
+      margin: 8px 0 0;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .auth-status.ok { color: #166534; }
+    .auth-status.warn { color: #92400e; }
+    .auth-status.err { color: #b91c1c; }
     .panel {
       margin: 16px 20px 20px;
       border: 1px solid var(--border);
@@ -184,6 +242,19 @@
       color: #334155;
       vertical-align: top;
     }
+    tbody td.editable-cell {
+      background: #fcfeff;
+      outline: 1px dashed transparent;
+      outline-offset: -4px;
+      transition: outline-color .12s ease, background .12s ease;
+    }
+    tbody td.editable-cell:focus {
+      outline-color: #0d9488;
+      background: #f0fdfa;
+    }
+    tbody tr.row-dirty td {
+      background: #fffbeb;
+    }
     .num {
       text-align: right;
       white-space: nowrap;
@@ -243,6 +314,9 @@
     @media (max-width: 980px) {
       .grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
       header { align-items: flex-start; }
+      .auth-controls {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+      }
       .filters {
         grid-template-columns: repeat(2, minmax(140px, 1fr));
       }
@@ -252,7 +326,11 @@
       .grid { grid-template-columns: 1fr; }
       body { padding: 10px; }
       .panel { margin: 10px; }
+      .auth-panel { margin: 10px; }
       .grid { padding: 10px 10px 0; }
+      .auth-controls {
+        grid-template-columns: 1fr;
+      }
       .filters {
         grid-template-columns: 1fr;
       }
@@ -277,6 +355,19 @@
       <article class="card"><p class="k">Total Despesas</p><p class="v">R$ 32.469,30</p><p class="m">Base consolidada da planilha</p></article>
       <article class="card"><p class="k">Meta Ads (Facebook)</p><p class="v">R$ 23.321,72</p><p class="m">16 lançamentos</p></article>
       <article class="card"><p class="k">Sem Recibo no Lote</p><p class="v">R$ 9.147,58</p><p class="m">4 lançamentos</p></article>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-title">Edição e Salvamento (Firebase + Auth)</div>
+      <div class="auth-controls">
+        <input id="authEmail" type="email" placeholder="E-mail de acesso" autocomplete="username" />
+        <input id="authPassword" type="password" placeholder="Senha" autocomplete="current-password" />
+        <button id="btnSignIn" type="button">Entrar</button>
+        <button id="btnSignOut" type="button" disabled>Sair</button>
+        <button id="btnSaveAll" type="button" disabled>Salvar alterações</button>
+        <button id="btnSyncBase" type="button" disabled>Publicar base inicial</button>
+      </div>
+      <p id="authStatus" class="auth-status">Modo leitura local. Configure Firebase para habilitar edição com persistência.</p>
     </section>
 
     <section class="panel">
@@ -317,26 +408,26 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>des-001</td><td>11/01/2026</td><td>11/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>M9P4DC5FS2</td><td class="num">R$ 418,81</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-002</td><td>11/01/2026</td><td>11/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>8X98FBDES2</td><td class="num">R$ 1.230,76</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-003</td><td>13/01/2026</td><td>13/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>AF76ADRES2</td><td class="num">R$ 20,62</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-004</td><td>15/01/2026</td><td>15/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>DATACRAZY.IO</td><td>Compra no crédito</td><td>-</td><td class="num">R$ 397,00</td><td><span class="status-pill st-missing">Sem recibo no lote</span></td></tr>
-            <tr><td>des-005</td><td>16/01/2026</td><td>16/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>MANYCHAT.COM</td><td>Compra no crédito</td><td>-</td><td class="num">R$ 250,58</td><td><span class="status-pill st-missing">Sem recibo no lote</span></td></tr>
-            <tr><td>des-006</td><td>18/01/2026</td><td>18/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>55CBYBDES2</td><td class="num">R$ 1.707,56</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-007</td><td>21/01/2026</td><td>21/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>P32HDDVES2</td><td class="num">R$ 1.715,28</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-008</td><td>22/01/2026</td><td>22/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>CGT9MDHES2</td><td class="num">R$ 1.707,59</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-009</td><td>24/01/2026</td><td>24/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>RMAAVDZES2</td><td class="num">R$ 1.709,70</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-010</td><td>25/01/2026</td><td>25/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 3823</td><td>SCFPQDVES2</td><td class="num">R$ 1.717,86</td><td><span class="status-pill st-manual">Pagamento manual</span></td></tr>
-            <tr><td>des-011</td><td>25/01/2026</td><td>25/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>HYVTPD9FS2</td><td class="num">R$ 1.707,53</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-012</td><td>26/01/2026</td><td>26/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 3823</td><td>BG94MD5FS2</td><td class="num">R$ 1.710,42</td><td><span class="status-pill st-manual">Pagamento manual</span></td></tr>
-            <tr><td>des-013</td><td>27/01/2026</td><td>27/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>4Y74FDMES2</td><td class="num">R$ 1.716,32</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-014</td><td>28/01/2026</td><td>Não Lançado</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>DKCJAEZES2</td><td class="num">R$ 344,73</td><td><span class="status-pill st-alert">Esquecido na planilha</span></td></tr>
-            <tr><td>des-015</td><td>29/01/2026</td><td>30/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>53SXWCDES2</td><td class="num">R$ 3.436,57</td><td><span class="status-pill st-manual">Pagamento manual</span></td></tr>
-            <tr><td>des-016</td><td>29/01/2026</td><td>31/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>MLAY5EVES2</td><td class="num">R$ 1.710,51</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-017</td><td>05/02/2026</td><td>06/02/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>VVXNAFRES2</td><td class="num">R$ 1.707,49</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
-            <tr><td>des-018</td><td>01/01/26</td><td>07/02/2026</td><td>Viviane</td><td>Itaú Lube PJ</td><td>Guardiã Renata</td><td>Pagamento ref. mês jan/26</td><td>-</td><td class="num">R$ 6.000,00</td><td><span class="status-pill st-missing">Sem recibo no lote</span></td></tr>
-            <tr><td>des-019</td><td>01/01/26</td><td>07/02/2026</td><td>Viviane</td><td>Itaú Lube PJ</td><td>SDR Fran</td><td>Pagamento ref. mês jan/26</td><td>-</td><td class="num">R$ 2.500,00</td><td><span class="status-pill st-missing">Sem recibo no lote</span></td></tr>
-            <tr><td>des-020</td><td>13/02/2026</td><td>13/02/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>SW2EEFVES2</td><td class="num">R$ 759,96</td><td><span class="status-pill st-ok">Conferido</span></td></tr>
+            <tr><td>des-001</td><td>11/01/2026</td><td>11/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>M9P4DC5FS2</td><td class="num">R$ 418,81</td><td>Conferido</td></tr>
+            <tr><td>des-002</td><td>11/01/2026</td><td>11/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>8X98FBDES2</td><td class="num">R$ 1.230,76</td><td>Conferido</td></tr>
+            <tr><td>des-003</td><td>13/01/2026</td><td>13/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>AF76ADRES2</td><td class="num">R$ 20,62</td><td>Conferido</td></tr>
+            <tr><td>des-004</td><td>15/01/2026</td><td>15/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>DATACRAZY.IO</td><td>Compra no crédito</td><td>-</td><td class="num">R$ 397,00</td><td>Sem recibo no lote</td></tr>
+            <tr><td>des-005</td><td>16/01/2026</td><td>16/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>MANYCHAT.COM</td><td>Compra no crédito</td><td>-</td><td class="num">R$ 250,58</td><td>Sem recibo no lote</td></tr>
+            <tr><td>des-006</td><td>18/01/2026</td><td>18/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>55CBYBDES2</td><td class="num">R$ 1.707,56</td><td>Conferido</td></tr>
+            <tr><td>des-007</td><td>21/01/2026</td><td>21/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>P32HDDVES2</td><td class="num">R$ 1.715,28</td><td>Conferido</td></tr>
+            <tr><td>des-008</td><td>22/01/2026</td><td>22/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>CGT9MDHES2</td><td class="num">R$ 1.707,59</td><td>Conferido</td></tr>
+            <tr><td>des-009</td><td>24/01/2026</td><td>24/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>RMAAVDZES2</td><td class="num">R$ 1.709,70</td><td>Conferido</td></tr>
+            <tr><td>des-010</td><td>25/01/2026</td><td>25/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 3823</td><td>SCFPQDVES2</td><td class="num">R$ 1.717,86</td><td>Pagamento manual</td></tr>
+            <tr><td>des-011</td><td>25/01/2026</td><td>25/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>HYVTPD9FS2</td><td class="num">R$ 1.707,53</td><td>Conferido</td></tr>
+            <tr><td>des-012</td><td>26/01/2026</td><td>26/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 3823</td><td>BG94MD5FS2</td><td class="num">R$ 1.710,42</td><td>Pagamento manual</td></tr>
+            <tr><td>des-013</td><td>27/01/2026</td><td>27/01/2026</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>4Y74FDMES2</td><td class="num">R$ 1.716,32</td><td>Conferido</td></tr>
+            <tr><td>des-014</td><td>28/01/2026</td><td>Não Lançado</td><td>Viviane</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - Visa final 4754</td><td>DKCJAEZES2</td><td class="num">R$ 344,73</td><td>Esquecido na planilha</td></tr>
+            <tr><td>des-015</td><td>29/01/2026</td><td>30/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>53SXWCDES2</td><td class="num">R$ 3.436,57</td><td>Pagamento manual</td></tr>
+            <tr><td>des-016</td><td>29/01/2026</td><td>31/01/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>MLAY5EVES2</td><td class="num">R$ 1.710,51</td><td>Conferido</td></tr>
+            <tr><td>des-017</td><td>05/02/2026</td><td>06/02/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>VVXNAFRES2</td><td class="num">R$ 1.707,49</td><td>Conferido</td></tr>
+            <tr><td>des-018</td><td>01/01/26</td><td>07/02/2026</td><td>Viviane</td><td>Itaú Lube PJ</td><td>Guardiã Renata</td><td>Pagamento ref. mês jan/26</td><td>-</td><td class="num">R$ 6.000,00</td><td>Sem recibo no lote</td></tr>
+            <tr><td>des-019</td><td>01/01/26</td><td>07/02/2026</td><td>Viviane</td><td>Itaú Lube PJ</td><td>SDR Fran</td><td>Pagamento ref. mês jan/26</td><td>-</td><td class="num">R$ 2.500,00</td><td>Sem recibo no lote</td></tr>
+            <tr><td>des-020</td><td>13/02/2026</td><td>13/02/2026</td><td>Skala</td><td>Cartão de Crédito</td><td>Facebook</td><td>Meta Ads - MasterCard final 8452</td><td>SW2EEFVES2</td><td class="num">R$ 759,96</td><td>Conferido</td></tr>
           </tbody>
         </table>
       </div>
@@ -344,12 +435,27 @@
     </section>
   </main>
   <script>
+    window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      appId: ""
+    };
+  </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { getFirestore, collection, doc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
     (function () {
       const table = document.getElementById("despesasTable");
       const tbody = table.querySelector("tbody");
       const headers = Array.from(table.querySelectorAll("th.sortable"));
       const allRows = Array.from(tbody.querySelectorAll("tr"));
       const totalRows = allRows.length;
+      const editableColumns = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      const dirtyRows = new Set();
+      const rowsById = new Map();
 
       const filterSearch = document.getElementById("filterSearch");
       const filterQuemPagou = document.getElementById("filterQuemPagou");
@@ -361,10 +467,36 @@
       const btnLimparFiltros = document.getElementById("btnLimparFiltros");
       const filterCount = document.getElementById("filterCount");
 
+      const authEmail = document.getElementById("authEmail");
+      const authPassword = document.getElementById("authPassword");
+      const btnSignIn = document.getElementById("btnSignIn");
+      const btnSignOut = document.getElementById("btnSignOut");
+      const btnSaveAll = document.getElementById("btnSaveAll");
+      const btnSyncBase = document.getElementById("btnSyncBase");
+      const authStatus = document.getElementById("authStatus");
+
       let sortState = { col: null, direction: "asc", type: "text" };
+      let firebaseEnabled = false;
+      let auth = null;
+      let db = null;
+      let currentUser = null;
+
+      function toCurrencyBR(value) {
+        const num = Number(value);
+        if (!Number.isFinite(num)) return "R$ 0,00";
+        return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(num);
+      }
 
       function parseCurrency(text) {
-        const normalized = text.replace(/[R$\s.]/g, "").replace(",", ".");
+        let normalized = String(text || "").replace(/[^\d,.-]/g, "");
+        if (!normalized) return 0;
+        const hasComma = normalized.includes(",");
+        const hasDot = normalized.includes(".");
+        if (hasComma && hasDot) {
+          normalized = normalized.replace(/\./g, "").replace(",", ".");
+        } else if (hasComma) {
+          normalized = normalized.replace(",", ".");
+        }
         const value = Number(normalized);
         return Number.isFinite(value) ? value : 0;
       }
@@ -396,6 +528,71 @@
 
       function rowValue(row, index) {
         return row.cells[index]?.innerText.trim() || "";
+      }
+
+      function setAuthStatus(message, tone) {
+        authStatus.textContent = message;
+        authStatus.classList.remove("ok", "warn", "err");
+        if (tone) authStatus.classList.add(tone);
+      }
+
+      function markDirty(row) {
+        if (!currentUser) return;
+        const rowId = row.dataset.rowId;
+        if (!rowId) return;
+        dirtyRows.add(rowId);
+        row.classList.add("row-dirty");
+      }
+
+      function clearDirty(row) {
+        const rowId = row.dataset.rowId;
+        if (!rowId) return;
+        dirtyRows.delete(rowId);
+        row.classList.remove("row-dirty");
+      }
+
+      function setEditingEnabled(enabled) {
+        allRows.forEach((row) => {
+          editableColumns.forEach((col) => {
+            const cell = row.cells[col];
+            cell.contentEditable = enabled ? "true" : "false";
+            cell.classList.toggle("editable-cell", enabled);
+            if (!enabled) {
+              cell.removeAttribute("spellcheck");
+            } else {
+              cell.setAttribute("spellcheck", "false");
+            }
+          });
+        });
+        btnSaveAll.disabled = !enabled || !firebaseEnabled;
+        btnSyncBase.disabled = !enabled || !firebaseEnabled;
+      }
+
+      function rowToPayload(row) {
+        return {
+          id: rowValue(row, 0),
+          data_competencia: rowValue(row, 1),
+          data_caixa: rowValue(row, 2),
+          quem_pagou: rowValue(row, 3),
+          instituicao_financeira: rowValue(row, 4),
+          favorecido: rowValue(row, 5),
+          detalhes_pagamento: rowValue(row, 6),
+          codigo_referencia: rowValue(row, 7),
+          valor: parseCurrency(rowValue(row, 8)),
+          observacoes: rowValue(row, 9)
+        };
+      }
+
+      function applyPayloadToRow(row, payload) {
+        if (payload.data_competencia !== undefined) row.cells[1].textContent = payload.data_competencia || "";
+        if (payload.data_caixa !== undefined) row.cells[2].textContent = payload.data_caixa || "";
+        if (payload.quem_pagou !== undefined) row.cells[3].textContent = payload.quem_pagou || "";
+        if (payload.instituicao_financeira !== undefined) row.cells[4].textContent = payload.instituicao_financeira || "";
+        if (payload.favorecido !== undefined) row.cells[5].textContent = payload.favorecido || "";
+        if (payload.detalhes_pagamento !== undefined) row.cells[6].textContent = payload.detalhes_pagamento || "";
+        if (payload.codigo_referencia !== undefined) row.cells[7].textContent = payload.codigo_referencia || "";
+        if (payload.valor !== undefined) row.cells[8].textContent = toCurrencyBR(payload.valor);
+        if (payload.observacoes !== undefined) row.cells[9].textContent = payload.observacoes || "";
       }
 
       function populateSelect(selectEl, values, label) {
@@ -512,48 +709,212 @@
         );
       }
 
-      headers.forEach((th) => {
-        th.addEventListener("click", () => {
-          const col = Number(th.dataset.col);
-          const type = th.dataset.type || "text";
-          if (sortState.col === col) {
-            sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
-          } else {
-            sortState.col = col;
-            sortState.direction = "asc";
-            sortState.type = type;
-          }
+      function bindTableEvents() {
+        allRows.forEach((row) => {
+          const rowId = rowValue(row, 0);
+          row.dataset.rowId = rowId;
+          rowsById.set(rowId, row);
+
+          editableColumns.forEach((col) => {
+            const cell = row.cells[col];
+            cell.addEventListener("input", () => markDirty(row));
+            cell.addEventListener("blur", () => {
+              if (col === 8) {
+                cell.textContent = toCurrencyBR(parseCurrency(cell.innerText));
+              }
+            });
+          });
+        });
+
+        headers.forEach((th) => {
+          th.addEventListener("click", () => {
+            const col = Number(th.dataset.col);
+            const type = th.dataset.type || "text";
+            if (sortState.col === col) {
+              sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
+            } else {
+              sortState.col = col;
+              sortState.direction = "asc";
+              sortState.type = type;
+            }
+            render();
+          });
+        });
+      }
+
+      async function loadCloudData() {
+        if (!db) return;
+        const snap = await getDocs(collection(db, "despesas"));
+        let loaded = 0;
+        snap.forEach((item) => {
+          const row = rowsById.get(item.id);
+          if (!row) return;
+          applyPayloadToRow(row, item.data());
+          clearDirty(row);
+          loaded++;
+        });
+        hydrateFilterOptions();
+        render();
+        setAuthStatus("Conectado. Dados de nuvem carregados: " + loaded + " linha(s).", "ok");
+      }
+
+      async function saveRows(rowIds) {
+        if (!db || !currentUser) return;
+        const writes = rowIds.map((rowId) => {
+          const row = rowsById.get(rowId);
+          if (!row) return Promise.resolve();
+          const payload = rowToPayload(row);
+          return setDoc(doc(db, "despesas", rowId), {
+            ...payload,
+            updated_at: serverTimestamp(),
+            updated_by: currentUser.email || ""
+          }, { merge: true });
+        });
+        await Promise.all(writes);
+      }
+
+      async function handleSaveDirty() {
+        if (!currentUser) {
+          setAuthStatus("Faça login para salvar alterações.", "warn");
+          return;
+        }
+        if (dirtyRows.size === 0) {
+          setAuthStatus("Sem alterações pendentes para salvar.", "warn");
+          return;
+        }
+        const ids = Array.from(dirtyRows);
+        btnSaveAll.disabled = true;
+        try {
+          await saveRows(ids);
+          ids.forEach((id) => {
+            const row = rowsById.get(id);
+            if (row) clearDirty(row);
+          });
+          setAuthStatus("Alterações salvas com sucesso (" + ids.length + " linha(s)).", "ok");
+        } catch (error) {
+          setAuthStatus("Erro ao salvar: " + error.message, "err");
+        } finally {
+          btnSaveAll.disabled = false;
+        }
+      }
+
+      async function publishBaseToCloud() {
+        if (!currentUser) {
+          setAuthStatus("Faça login para publicar a base inicial.", "warn");
+          return;
+        }
+        btnSyncBase.disabled = true;
+        try {
+          await saveRows(allRows.map((row) => row.dataset.rowId));
+          setAuthStatus("Base inicial publicada na nuvem com sucesso.", "ok");
+        } catch (error) {
+          setAuthStatus("Erro ao publicar base: " + error.message, "err");
+        } finally {
+          btnSyncBase.disabled = false;
+        }
+      }
+
+      function bindFilterEvents() {
+        [
+          filterSearch,
+          filterQuemPagou,
+          filterInstituicao,
+          filterFavorecido,
+          filterStatus,
+          filterDataInicio,
+          filterDataFim
+        ].forEach((el) => el.addEventListener("input", render));
+        [filterQuemPagou, filterInstituicao, filterFavorecido, filterStatus].forEach((el) =>
+          el.addEventListener("change", render)
+        );
+
+        btnLimparFiltros.addEventListener("click", () => {
+          filterSearch.value = "";
+          filterQuemPagou.value = "";
+          filterInstituicao.value = "";
+          filterFavorecido.value = "";
+          filterStatus.value = "";
+          filterDataInicio.value = "";
+          filterDataFim.value = "";
+          sortState = { col: null, direction: "asc", type: "text" };
           render();
         });
-      });
+      }
 
-      [
-        filterSearch,
-        filterQuemPagou,
-        filterInstituicao,
-        filterFavorecido,
-        filterStatus,
-        filterDataInicio,
-        filterDataFim,
-      ].forEach((el) => el.addEventListener("input", render));
-      [filterQuemPagou, filterInstituicao, filterFavorecido, filterStatus].forEach((el) =>
-        el.addEventListener("change", render)
-      );
+      function isFirebaseConfigured(config) {
+        const required = ["apiKey", "authDomain", "projectId", "appId"];
+        return required.every((key) => typeof config[key] === "string" && config[key].trim() !== "");
+      }
 
-      btnLimparFiltros.addEventListener("click", () => {
-        filterSearch.value = "";
-        filterQuemPagou.value = "";
-        filterInstituicao.value = "";
-        filterFavorecido.value = "";
-        filterStatus.value = "";
-        filterDataInicio.value = "";
-        filterDataFim.value = "";
-        sortState = { col: null, direction: "asc", type: "text" };
-        render();
-      });
+      function bindAuthEvents() {
+        btnSignIn.addEventListener("click", async () => {
+          if (!firebaseEnabled || !auth) return;
+          if (!authEmail.value || !authPassword.value) {
+            setAuthStatus("Informe e-mail e senha para login.", "warn");
+            return;
+          }
+          btnSignIn.disabled = true;
+          try {
+            await signInWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
+          } catch (error) {
+            setAuthStatus("Falha no login: " + error.message, "err");
+            btnSignIn.disabled = false;
+          }
+        });
 
+        btnSignOut.addEventListener("click", async () => {
+          if (!auth) return;
+          await signOut(auth);
+        });
+
+        btnSaveAll.addEventListener("click", handleSaveDirty);
+        btnSyncBase.addEventListener("click", publishBaseToCloud);
+      }
+
+      function initFirebase() {
+        const config = window.FIREBASE_CONFIG || {};
+        if (!isFirebaseConfigured(config)) {
+          setAuthStatus("Firebase não configurado. Preencha FIREBASE_CONFIG para habilitar edição com salvamento.", "warn");
+          setEditingEnabled(false);
+          return;
+        }
+
+        try {
+          const app = initializeApp(config);
+          auth = getAuth(app);
+          db = getFirestore(app);
+          firebaseEnabled = true;
+          setAuthStatus("Firebase ativo. Faça login para editar e salvar.", "ok");
+
+          onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+              btnSignIn.disabled = true;
+              btnSignOut.disabled = false;
+              setEditingEnabled(true);
+              setAuthStatus("Conectado: " + (user.email || "usuário") + ". Carregando dados...", "ok");
+              await loadCloudData();
+            } else {
+              btnSignIn.disabled = false;
+              btnSignOut.disabled = true;
+              setEditingEnabled(false);
+              setAuthStatus("Desconectado. Modo leitura.", "warn");
+            }
+          });
+        } catch (error) {
+          firebaseEnabled = false;
+          setEditingEnabled(false);
+          setAuthStatus("Erro ao iniciar Firebase: " + error.message, "err");
+        }
+      }
+
+      bindTableEvents();
+      bindFilterEvents();
+      bindAuthEvents();
       hydrateFilterOptions();
       render();
+      setEditingEnabled(false);
+      initFirebase();
     })();
   </script>
 </body>
